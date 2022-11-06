@@ -123,7 +123,7 @@ public class ChatClient extends AbstractClient
 			//imprime un message
 			clientUI.display("there is a problem with the deconnection");
 		}
-	  } else if (cmd.contains("#sethost")) {
+	  } else if (cmd.startsWith("#sethost")) {
 	
 		  if (this.isConnected()) {
 			  clientUI.display("we can't set the host value while the client is logged in");
@@ -132,7 +132,7 @@ public class ChatClient extends AbstractClient
 					this.setHost(temp);
 				}
 				  
-	  } else if (cmd.contains("#setport")) {
+	  } else if (cmd.startsWith("#setport")) {
 		  if (this.isConnected()) {
 			  clientUI.display("we can't set the port value while the client is logged in");
 				} else {
