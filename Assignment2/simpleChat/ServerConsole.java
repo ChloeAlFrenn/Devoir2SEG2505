@@ -2,6 +2,7 @@
 import java.util.Scanner;
 
 import common.ChatIF;
+import ocsf.server.ConnectionToClient;
 
 public class ServerConsole implements ChatIF {
 
@@ -59,7 +60,7 @@ public class ServerConsole implements ChatIF {
 	      while (true) 
 	      {
 	        message = fromConsole.nextLine();
-	        server.handleMessageFromServerUI(message);
+	        server.handleMessageFromServerUI( message);
 	      }
 	    } 
 	    catch (Exception ex) 
@@ -77,7 +78,7 @@ public class ServerConsole implements ChatIF {
 	   */
 	  public void display(String message) 
 	  {
-	    System.out.println("SERVER MSG> " + message);
+		System.out.println("SERVER MSG> " + message);
 	  }
 	  
 	//Class methods ***************************************************

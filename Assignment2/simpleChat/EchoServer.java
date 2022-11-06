@@ -26,11 +26,11 @@ public class EchoServer extends AbstractServer
 {
   //Class variables *************************************************
   
-
+  final private String key = "loginKey";
   /**
    * The default port to listen on.
    */
-  final public static int DEFAULT_PORT = 5555;
+  final public static int DEFAULT_PORT = 5553;
   
   //Constructors ****************************************************
   
@@ -55,7 +55,7 @@ public class EchoServer extends AbstractServer
     try {
 		listen();
 	} catch (IOException e) {
-		serverUI.display("no clients yet waiting for connection");
+		serverUI.display("Error unable to listen for connections");
 	}
   }
 
@@ -71,8 +71,19 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
-    System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
+    System.out.println("Message received: " + msg + " from " + client.getInfo(key));
+    
+    String msgStr = (String) msg;
+    
+   if(msgStr.startsWith("#login")){
+	   String loginID = msgStr.substring(8, (msgStr.length()-1));
+       client.setInfo(key, loginID);
+       System.out.println(client.getInfo(key) +" has logged on.");
+       this.sendToAllClients(client.getInfo(key) +" has logged on.");
+    	} 
+   else 
+    this.sendToAllClients(client.getInfo(key)+ ": " +msg);
+   
   }
     
   /**
@@ -87,6 +98,7 @@ public class EchoServer extends AbstractServer
 		handleCommand(message);
 	} else
 		serverUI.display(message);
+	  	sendToAllClients("SERVER MESSAGE>" + message);
   }
   
   private void handleCommand(String cmd) {
@@ -102,6 +114,7 @@ public class EchoServer extends AbstractServer
 		  try {
 			serverUI.display("the server will close everything");
 			close();
+			
 		} catch (IOException e) {
 			serverUI.display("the server was unable to close");
 		}
@@ -120,6 +133,7 @@ public class EchoServer extends AbstractServer
 				try {
 					this.listen();
 				} catch (IOException e) {
+					 System.out.println(e);
 					 serverUI.display("the server is not able to listen");
 				}
 			}
@@ -171,7 +185,7 @@ public class EchoServer extends AbstractServer
    */
   @Override
   synchronized protected void clientDisconnected(ConnectionToClient client) {
-	  serverUI.display(client+ "has disconnected");
+	  serverUI.display(client.getInfo(key) + " has disconnected");
   }
   
   /**

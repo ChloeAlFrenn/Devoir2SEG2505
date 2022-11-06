@@ -26,7 +26,8 @@ public class ChatClient extends AbstractClient
    * the display method in the client.
    */
   ChatIF clientUI; 
- 
+  
+  String loginID;
 
   
   //Constructors ****************************************************
@@ -39,13 +40,24 @@ public class ChatClient extends AbstractClient
    * @param clientUI The interface type variable.
    */
   
-  public ChatClient(String host, int port, ChatIF clientUI) 
-		   throws IOException 
-		  {
-		    super(host, port); //Call the superclass constructor
-		    this.clientUI = clientUI;
-		    openConnection();
-		  }
+  public ChatClient(String host, int port, String loginID, ChatIF clientUI) 
+  {
+    super(host, port); //Call the superclass constructor
+    this.loginID = loginID;
+    this.clientUI = clientUI;
+
+    if(loginID.isEmpty()) {
+    	 clientUI.display("ERROR - No login ID specified.  Connection aborted.");
+    	 quit();
+    	 }
+    try {
+    	connectionEstablished();
+		openConnection();
+	} catch (IOException e) {
+		clientUI.display("ERROR - Can't setup connection! Terminating client.");
+		quit();
+	}
+  }
 
   
   //Instance methods ************************************************
@@ -57,11 +69,30 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromServer(Object msg) 
   {
-    clientUI.display(msg.toString());
+	  String str = msg.toString();
+	  if(str.contains("#")){
+		  //donothing
+	  }else if(str.contains("SERVER MESSAGE>")) {
+		  System.out.println("SERVER MESSAGE>" + msg.toString().substring(15) );
+	  } else
+	  clientUI.display(msg.toString());
  
   }
-    
-    /**
+  
+  /**
+	 * Hook method called after a connection has been established. The default
+	 * implementation does nothing. It may be overridden by subclasses to do
+	 * anything they wish.
+	 */
+	public void connectionEstablished() {
+			try {
+				sendToServer("#login <"+ loginID +">");
+			} catch (IOException e) {
+				 
+			}
+	
+	}
+  /**
 	 * Implementation of the hook method called after the connection has been closed. The default
 	 * implementation does nothing. The method may be overriden by subclasses to
 	 * perform special processing such as cleaning up and terminating, or
@@ -175,7 +206,9 @@ public class ChatClient extends AbstractClient
     {
       closeConnection();
     }
-    catch(IOException e) {}
+    catch(IOException e) {
+    	
+    }
     System.exit(0);
   }
 }
