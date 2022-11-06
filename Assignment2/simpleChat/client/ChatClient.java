@@ -68,7 +68,7 @@ public class ChatClient extends AbstractClient
 	 */
   	@Override
 	public void connectionClosed() {
-  		clientUI.display("the conneciton has been closed");
+  		clientUI.display("the connexiton has been closed");
 	}
 
 	/**
@@ -95,7 +95,10 @@ public class ChatClient extends AbstractClient
   {
     try
     {
-      sendToServer(message);
+    	if(message.startsWith("#")) {
+    		handleCommand(message);
+    	} else
+    		sendToServer(message);
     }
     catch(IOException e)
     {
@@ -103,6 +106,63 @@ public class ChatClient extends AbstractClient
         ("Could not send message to server.  Terminating client.");
       quit();
     }
+  }
+  
+  private void handleCommand(String cmd) {
+	  if(cmd.equals("#quit")) {
+		  clientUI.display("the client will quit");
+		  quit();
+	  } else if (cmd.equals("#logoff")) {
+		  try {
+			if (this.isConnected()) {
+			this.closeConnection();
+			} else {
+				clientUI.display("the client is already disconnected");
+			}
+		} catch (IOException e) {
+			//imprime un message
+			clientUI.display("there is a problem with the deconnection");
+		}
+	  } else if (cmd.contains("#sethost")) {
+	
+		  if (this.isConnected()) {
+			  clientUI.display("we can't set the host value while the client is logged in");
+				} else {
+					String temp = cmd.substring(10,14);
+					this.setHost(temp);
+				}
+				  
+	  } else if (cmd.contains("#setport")) {
+		  if (this.isConnected()) {
+			  clientUI.display("we can't set the port value while the client is logged in");
+				} else {
+					int temp = Integer.parseInt(cmd.substring(10,14));
+					this.setPort(temp);
+				}
+		  
+	  } else if (cmd.equals("#login")) {
+		  if (this.isConnected()) {
+			  clientUI.display("the client is already logged in");
+				} else {
+					try {
+						this.openConnection();
+					} catch (IOException e) {
+						clientUI.display("there is a problem with the connection");
+					}
+				}
+		  
+	  } else if (cmd.equals("#gethost")) {
+		
+		  clientUI.display(String.valueOf(this.getHost()));
+		  
+	  }else if (cmd.equals("#getport")) {
+		  
+		  clientUI.display(String.valueOf(this.getPort()));
+		  
+	  } else {
+		  
+		  clientUI.display("the command does not exist");
+	  }
   }
   
   /**
