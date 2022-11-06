@@ -26,6 +26,7 @@ public class EchoServer extends AbstractServer
 {
   //Class variables *************************************************
   
+
   /**
    * The default port to listen on.
    */
@@ -54,7 +55,7 @@ public class EchoServer extends AbstractServer
     try {
 		listen();
 	} catch (IOException e) {
-		serverUI.display("ERROR - Could not listen for clients!");
+		serverUI.display("no clients yet waiting for connection");
 	}
   }
 

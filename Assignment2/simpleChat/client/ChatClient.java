@@ -26,6 +26,7 @@ public class ChatClient extends AbstractClient
    * the display method in the client.
    */
   ChatIF clientUI; 
+ 
 
   
   //Constructors ****************************************************
@@ -39,12 +40,12 @@ public class ChatClient extends AbstractClient
    */
   
   public ChatClient(String host, int port, ChatIF clientUI) 
-    throws IOException 
-  {
-    super(host, port); //Call the superclass constructor
-    this.clientUI = clientUI;
-    openConnection();
-  }
+		   throws IOException 
+		  {
+		    super(host, port); //Call the superclass constructor
+		    this.clientUI = clientUI;
+		    openConnection();
+		  }
 
   
   //Instance methods ************************************************
@@ -59,8 +60,8 @@ public class ChatClient extends AbstractClient
     clientUI.display(msg.toString());
  
   }
-  
-  /**
+    
+    /**
 	 * Implementation of the hook method called after the connection has been closed. The default
 	 * implementation does nothing. The method may be overriden by subclasses to
 	 * perform special processing such as cleaning up and terminating, or
@@ -68,7 +69,7 @@ public class ChatClient extends AbstractClient
 	 */
   	@Override
 	public void connectionClosed() {
-  		clientUI.display("the connexiton has been closed");
+  		clientUI.display("the connection has been closed");
 	}
 
 	/**
